@@ -37,7 +37,7 @@ func ErrorCheck(err error) {
 }
 
 func main() {
-	log.Println("News-GO - 1.0.0")
+	log.Println("Everybody-Votes-GO - 1.0.0")
 
 	log.Println("Loading configuration...")
 	cfg := Config{}

@@ -23,41 +23,25 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"log"
-	"net/http"
+
+	"./modules"
+
+	"github.com/gin-gonic/gin"
 )
 
-// ErrorCheck makes error checking easier.
-func ErrorCheck(err error) {
-	if err != nil {
-		log.Fatalf("An error occurred: %s", err.Error())
-	}
-}
-
 func main() {
-	log.Println("Everybody-Votes-GO - 1.0.0")
+	log.Println("EverybodyVotes-GO - 1.1.0")
 
-	log.Println("Loading configuration...")
-	cfg := Config{}
-	file, err := ioutil.ReadFile("config.json")
-	ErrorCheck(err)
-	ErrorCheck(json.Unmarshal([]byte(file), &cfg))
+	/*log.Println("Loading configuration...")
+	config := Load()*/
 
+	// Let's make an gin engine for our server.
+	log.Println("Initializing server...")
+	server := gin.Default()
+	server.GET("/", modules.Index)
+
+	// If possible, we can replace this with RunTLS() in the future.
 	log.Println("Starting server...")
-	http.HandleFunc("/", handler)
-	log.Fatal(http.ListenAndServe(cfg.Address, nil))
-
-	// From there on, everything server-related will be redirected to our handler function.
-}
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	if r.UserAgent() == "PSP" {
-		// Do PSP stuff
-	} else if r.UserAgent() == "PlayStation Vita" {
-		// Do Vita stuff
-	} else {
-		w.Write([]byte("Whatever you're trying, you're very wrong here."))
-	}
+	server.Run()
 }

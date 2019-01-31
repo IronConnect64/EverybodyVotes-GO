@@ -1,3 +1,9 @@
 {
-    "address": "localhost:80"
+    "database": {
+        "hostname": "",
+        "port": 0,
+        "username": "",
+        "password": "",
+        "database": ""
+    }
 }

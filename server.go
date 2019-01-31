@@ -25,8 +25,6 @@ package main
 import (
 	"log"
 
-	"./modules"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -39,7 +37,6 @@ func main() {
 	// Let's make an gin engine for our server.
 	log.Println("Initializing server...")
 	server := gin.Default()
-	server.GET("/", modules.Index)
 
 	// If possible, we can replace this with RunTLS() in the future.
 	log.Println("Starting server...")

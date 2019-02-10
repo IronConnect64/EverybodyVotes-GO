@@ -1,4 +1,7 @@
 {
+    "port": "50051",
+
+
     "database": {
         "hostname": "",
         "port": 0,

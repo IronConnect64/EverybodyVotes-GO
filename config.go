@@ -28,8 +28,9 @@ import (
 	"os"
 )
 
-// Config represents the config data.
-type Config struct {
+type config struct {
+	Port string `json:"port"`
+
 	Database struct {
 		Hostname string `json:"hostname"`
 		Port     int    `json:"port"`
@@ -39,13 +40,12 @@ type Config struct {
 	} `json:"database"`
 }
 
-// Load loads the configuration into memory.
-func Load(filename string) Config {
-	cfg := Config{}
-	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		// path/to/whatever does not exist
+func load() config {
+	cfg := config{}
+	if _, err := os.Stat("config.json"); os.IsNotExist(err) {
+		log.Fatalln("Your configuration does not exist.")
 	}
-	file, err := os.Open(filename)
+	file, err := os.Open("config.json")
 	if err != nil {
 		log.Fatalf("An error occurred when opening your configuration: %s\n", err.Error())
 	}

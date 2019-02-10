@@ -31,8 +31,8 @@ import (
 func main() {
 	log.Println("EverybodyVotes-GO - 1.1.0")
 
-	/*log.Println("Loading configuration...")
-	config := Load()*/
+	log.Println("Loading configuration...")
+	config := load()
 
 	// Let's make an gin engine for our server.
 	log.Println("Initializing server...")
@@ -40,5 +40,5 @@ func main() {
 
 	// If possible, we can replace this with RunTLS() in the future.
 	log.Println("Starting server...")
-	server.Run()
+	server.Run(":" + config.Port)
 }

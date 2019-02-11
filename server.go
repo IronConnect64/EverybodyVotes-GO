@@ -29,10 +29,14 @@ import (
 )
 
 func main() {
-	log.Println("EverybodyVotes-GO - 1.1.0")
+	log.Println("EverybodyVotes-GO - 1.2.0")
 
+	// We need some additional data for the server.
 	log.Println("Loading configuration...")
 	config := load()
+
+	// And here's the second part.
+	connect(config.Database.Username, config.Database.Password, config.Database.Hostname, config.Database.Database, config.Database.Port)
 
 	// Let's make an gin engine for our server.
 	log.Println("Initializing server...")
@@ -41,4 +45,8 @@ func main() {
 	// If possible, we can replace this with RunTLS() in the future.
 	log.Println("Starting server...")
 	server.Run(":" + config.Port)
+
+	// This gets executed after the server has been shutdown
+	defer disconnect()
+	log.Fatalln("Caught signal, shutting down...")
 }

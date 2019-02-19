@@ -85,23 +85,23 @@ func checkToken(token, mac string) bool {
 }
 
 func pollsHandler(ctx *gin.Context) {
-	mac := ctx.Keys["MAC"].(string)
-
-	if !checkToken(mac, ctx.Keys["Authorization"].(string)) {
+	if ctx.GetHeader("HTTP_X_PSP_BROWSER") == "" {
+		ctx.AbortWithStatus(http.StatusUnavailableForLegalReasons)
+	} else if !checkToken(ctx.GetHeader("MAC"), ctx.GetHeader("Authorization")) {
 		ctx.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
 	result, err := database.Query("select * from polls;")
 	if os.IsExist(err) {
-		log.Printf("[1/2] User with MAC %s tried to fetch data and failed.", mac)
+		log.Printf("[1/2] User with MAC %s tried to fetch data and failed.", ctx.GetHeader("MAC"))
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
 	stuff, err := result.Columns()
 	if os.IsExist(err) {
-		log.Printf("[2/2] User with MAC %s tried to fetch data and failed.", mac)
+		log.Printf("[2/2] User with MAC %s tried to fetch data and failed.", ctx.GetHeader("MAC"))
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
@@ -119,7 +119,7 @@ func pollsHandler(ctx *gin.Context) {
 		return
 	}
 
-	log.Printf("User with MAC %s succeeded to fetch the latest poll.", mac)
+	log.Printf("User with MAC %s succeeded to fetch the latest poll.", ctx.GetHeader("MAC"))
 }
 
 func registerHander(ctx *gin.Context) {

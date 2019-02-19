@@ -23,7 +23,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -42,9 +41,11 @@ func main() {
 	// Let's make an gin engine for our server.
 	log.Println("Initializing server...")
 	server := gin.Default()
-	server.GET("/", func(ctx *gin.Context) {
-		fmt.Fprintln(ctx.Writer, "Nothing here yet, sadly. ;w;")
-	})
+
+	server.GET("/polls", pollsHandler)
+	server.POST("/register", registerHander)
+	server.POST("/unregister", unregisterHandler)
+	server.POST("/vote", voteHandler)
 
 	// If possible, we can replace this with RunTLS() in the future.
 	log.Println("Starting server...")
@@ -53,4 +54,20 @@ func main() {
 	// This gets executed after the server has been shutdown
 	defer disconnect()
 	log.Fatalln("Caught signal, shutting down...")
+}
+
+func pollsHandler(ctx *gin.Context) {
+
+}
+
+func registerHander(ctx *gin.Context) {
+
+}
+
+func unregisterHandler(ctx *gin.Context) {
+
+}
+
+func voteHandler(ctx *gin.Context) {
+
 }

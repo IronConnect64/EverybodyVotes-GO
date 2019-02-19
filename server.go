@@ -64,7 +64,7 @@ func main() {
 func checkToken(creds auth) bool {
 	result, err := database.Query(fmt.Sprintf("select Token from Users where MAC='%s';", creds.ID))
 	if os.IsExist(err) {
-		log.Printf("[1/2] An error occurred when checking the Token. Token: %s.\nError: %s", creds.ID, creds.Token, err.Error())
+		log.Printf("[1/2] An error occurred when checking the Token. ID: %s - Token: %s.\nError: %s", creds.ID, creds.Token, err.Error())
 		return false
 	}
 

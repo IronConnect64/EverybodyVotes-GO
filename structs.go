@@ -3,11 +3,7 @@ package main
 type register struct {
 	Serial string `json:"serial"`
 	MAC    string `json:"mac"`
-}
-
-type login struct {
-	ID  string `json:"id"`
-	MAC string `json:"mac"`
+	Token  string `json:"token"`
 }
 
 type vote struct {
@@ -21,4 +17,5 @@ type poll struct {
 	Question string `json:"question"`
 	A        string `json:"a"`
 	B        string `json:"b"`
+	Latest   bool   `json:"latest"`
 }

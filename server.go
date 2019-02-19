@@ -23,7 +23,11 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
+	"net/http"
+	"os"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -42,7 +46,6 @@ func main() {
 	log.Println("Initializing server...")
 	server := gin.Default()
 
-	server.POST("/login", loginHandler)
 	server.GET("/polls", pollsHandler)
 	server.POST("/register", registerHander)
 	server.POST("/unregister", unregisterHandler)
@@ -57,12 +60,66 @@ func main() {
 	log.Fatalln("Caught signal, shutting down...")
 }
 
-func loginHandler(ctx *gin.Context) {
+func checkToken(token, mac string) bool {
+	result, err := database.Query("select token from users where MAC='%s';", mac)
+	if os.IsExist(err) {
+		log.Printf("[1/2] An error occurred when checking the token for the MAC %s. Token: %s.\nError: %s", mac, token, err.Error())
+		return false
+	}
 
+	column, err := result.Columns()
+	if os.IsExist(err) {
+		log.Printf("[2/2] An error occurred when checking the token for the MAC %s. Token: %s.\nError: %s", mac, token, err.Error())
+		return false
+	}
+
+	for _, v := range column {
+		if v == token {
+			log.Printf("MAC %s used Token %s to log in and succeeded.", mac, token)
+			return true
+		}
+	}
+
+	log.Printf("MAC %s used Token %s to log in, but failed.", mac, token)
+	return false
 }
 
 func pollsHandler(ctx *gin.Context) {
+	mac := ctx.Keys["MAC"].(string)
 
+	if !checkToken(mac, ctx.Keys["Authorization"].(string)) {
+		ctx.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	result, err := database.Query("select * from polls;")
+	if os.IsExist(err) {
+		log.Printf("[1/2] User with MAC %s tried to fetch data and failed.", mac)
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	stuff, err := result.Columns()
+	if os.IsExist(err) {
+		log.Printf("[2/2] User with MAC %s tried to fetch data and failed.", mac)
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	latest, _ := strconv.ParseBool(stuff[4])
+
+	if err := json.NewEncoder(ctx.Writer).Encode(&poll{
+		ID:       stuff[0],
+		Question: stuff[1],
+		A:        stuff[2],
+		B:        stuff[3],
+		Latest:   latest,
+	}); os.IsExist(err) {
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	log.Printf("User with MAC %s succeeded to fetch the latest poll.", mac)
 }
 
 func registerHander(ctx *gin.Context) {

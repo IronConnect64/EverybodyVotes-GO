@@ -31,7 +31,8 @@ create table if not exists `polls` (
   `ID` int(5) unsigned,
   `Question` varchar(200),
   `A` varchar(40),
-  `B` varchar(40)
+  `B` varchar(40),
+  `Latest` boolean
 ) engine=InnoDB default charset=utf8;
 
 create table if not exists `users` (

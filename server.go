@@ -23,6 +23,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -41,6 +42,9 @@ func main() {
 	// Let's make an gin engine for our server.
 	log.Println("Initializing server...")
 	server := gin.Default()
+	server.GET("/", func(ctx *gin.Context) {
+		fmt.Fprintln(ctx.Writer, "Nothing here yet, sadly. ;w;")
+	})
 
 	// If possible, we can replace this with RunTLS() in the future.
 	log.Println("Starting server...")

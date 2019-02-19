@@ -35,8 +35,9 @@ create table if not exists `polls` (
 ) engine=InnoDB default charset=utf8;
 
 create table if not exists `users` (
-  `Data` binary(200) DEFAULT,
-  `MAC` varchar(17)
+  `Data` binary(200),
+  `MAC` varchar(17),
+  `Token` varchar(50) unique
 ) engine=InnoDB default charset=utf8;
 
 create table if not exists `votes` (

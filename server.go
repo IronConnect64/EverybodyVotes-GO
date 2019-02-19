@@ -42,6 +42,7 @@ func main() {
 	log.Println("Initializing server...")
 	server := gin.Default()
 
+	server.POST("/login", loginHandler)
 	server.GET("/polls", pollsHandler)
 	server.POST("/register", registerHander)
 	server.POST("/unregister", unregisterHandler)
@@ -54,6 +55,10 @@ func main() {
 	// This gets executed after the server has been shutdown
 	defer disconnect()
 	log.Fatalln("Caught signal, shutting down...")
+}
+
+func loginHandler(ctx *gin.Context) {
+
 }
 
 func pollsHandler(ctx *gin.Context) {

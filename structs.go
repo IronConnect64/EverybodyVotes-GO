@@ -22,10 +22,15 @@
 
 package main
 
+type auth struct {
+	ID    string `json:"id"`
+	Token string `json:"token"`
+}
+
 type register struct {
-	Serial string `json:"serial"`
-	MAC    string `json:"mac"`
-	Token  string `json:"token"`
+	ID    string `json:"id"`
+	MAC   string `json:"mac"`
+	Token string `json:"token"`
 }
 
 type vote struct {

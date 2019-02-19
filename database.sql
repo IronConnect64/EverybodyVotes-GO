@@ -24,25 +24,26 @@
 -- 10.3.12-MariaDB               
 -- --------------------------------------------------------
 
-create database if not exists `everybodyvotes-go`;
-use `everybodyvotes-go`;
+create database if not exists `EverybodyVotes-GO`;
+use `EverybodyVotes-GO`;
 
-create table if not exists `polls` (
-  `ID` int(5) unsigned,
+create table if not exists `Polls` (
+  `ID` int(5) unsigned unique,
   `Question` varchar(200),
   `A` varchar(40),
   `B` varchar(40),
   `Latest` boolean
 ) engine=InnoDB default charset=utf8;
 
-create table if not exists `users` (
+create table if not exists `Users` (
   `Data` binary(200),
   `MAC` varchar(17),
-  `Token` varchar(50) unique
+  `Token` varchar(50) unique,
+  `ID` varchar(10) unique
 ) engine=InnoDB default charset=utf8;
 
-create table if not exists `votes` (
-  `ID` int(5) unsigned,
+create table if not exists `Votes` (
+  `ID` int(5) unsigned unique,
   `AVotes` int(3) unsigned zerofill,
   `BVotes` int(3) unsigned zerofill
 ) engine=InnoDB default charset=utf8;

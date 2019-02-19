@@ -24,6 +24,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -60,34 +61,43 @@ func main() {
 	log.Fatalln("Caught signal, shutting down...")
 }
 
-func checkToken(token, mac string) bool {
-	result, err := database.Query("select token from users where MAC='%s';", mac)
+func checkToken(creds auth) bool {
+	result, err := database.Query(fmt.Sprintf("select Token from Users where MAC='%s';", creds.ID))
 	if os.IsExist(err) {
-		log.Printf("[1/2] An error occurred when checking the token for the MAC %s. Token: %s.\nError: %s", mac, token, err.Error())
+		log.Printf("[1/2] An error occurred when checking the Token. Token: %s.\nError: %s", creds.ID, creds.Token, err.Error())
 		return false
 	}
 
 	column, err := result.Columns()
 	if os.IsExist(err) {
-		log.Printf("[2/2] An error occurred when checking the token for the MAC %s. Token: %s.\nError: %s", mac, token, err.Error())
+		log.Printf("[2/2] An error occurred when checking the Token for the ID %s. Token: %s.\nError: %s", creds.ID, creds.Token, err.Error())
 		return false
 	}
 
 	for _, v := range column {
-		if v == token {
-			log.Printf("MAC %s used Token %s to log in and succeeded.", mac, token)
+		if v == creds.Token {
+			log.Printf("ID %s used Token %s to log in and succeeded.", creds.ID, creds.Token)
 			return true
 		}
 	}
 
-	log.Printf("MAC %s used Token %s to log in, but failed.", mac, token)
+	log.Printf("ID %s used Token %s to log in, but failed.", creds.ID, creds.Token)
 	return false
 }
 
 func pollsHandler(ctx *gin.Context) {
-	if ctx.GetHeader("HTTP_X_PSP_BROWSER") == "" {
+	if len(ctx.GetHeader("HTTP_X_PSP_BROWSER")) == 0 {
 		ctx.AbortWithStatus(http.StatusUnavailableForLegalReasons)
-	} else if !checkToken(ctx.GetHeader("MAC"), ctx.GetHeader("Authorization")) {
+	}
+
+	var credentials auth
+
+	if err := json.NewDecoder(ctx.Request.Body).Decode(&credentials); os.IsExist(err) {
+		log.Printf("Couldn't identify user.")
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	} else if !checkToken(credentials) {
+		log.Printf("User with ID %s tried to log in with invalid credentials.", credentials.ID)
 		ctx.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}

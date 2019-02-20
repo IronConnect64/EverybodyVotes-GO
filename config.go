@@ -23,33 +23,34 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"os"
+
+	"gopkg.in/yaml.v2"
 )
 
 type config struct {
-	Port string `json:"port"`
+	Port string `yaml:"port"`
 
 	Database struct {
-		Hostname string `json:"hostname"`
-		Port     int    `json:"port"`
-		Username string `json:"username"`
-		Password string `json:"password"`
-		Database string `json:"database"`
-	} `json:"database"`
+		Hostname string `yaml:"hostname"`
+		Port     int    `yaml:"port"`
+		Username string `yaml:"username"`
+		Password string `yaml:"password"`
+		Database string `yaml:"database"`
+	} `yaml:"database"`
 }
 
 func load() config {
 	cfg := config{}
-	if _, err := os.Stat("config.json"); os.IsNotExist(err) {
+	if _, err := os.Stat("config.yml"); os.IsNotExist(err) {
 		log.Fatalln("Your configuration does not exist.")
 	}
-	file, err := os.Open("config.json")
+	file, err := os.Open("config.yml")
 	if err != nil {
 		log.Fatalf("An error occurred when opening your configuration: %s\n", err.Error())
 	}
-	err = json.NewDecoder(file).Decode(&cfg)
+	err = yaml.NewDecoder(file).Decode(&cfg)
 	if err != nil {
 		log.Fatalf("An error occurred when decoding your configuration: %s\n", err.Error())
 	}

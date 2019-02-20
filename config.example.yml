@@ -1,0 +1,8 @@
+port: "50051"
+
+database:
+    - hostname: "localhost"
+    - port: 3306
+    - username: "evcpsp"
+    - password: "Apfel doesn't own a PSP, but he likes working on this. Got the joke? Yeah, I got no life."
+    - database: "EverybodyVotes-GO"

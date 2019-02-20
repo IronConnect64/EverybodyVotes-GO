@@ -34,7 +34,7 @@ import (
 var database *sql.DB
 
 func main() {
-	log.Println("EverybodyVotes-GO - 1.2.0")
+	log.Println("EverybodyVotes-GO - 1.3.1")
 
 	// We need some additional data for the server.
 	log.Println("Loading configuration...")
@@ -45,6 +45,8 @@ func main() {
 		config.Database.Password, config.Database.Hostname, config.Database.Port, config.Database.Database))
 	if os.IsExist(err) {
 		log.Fatalf("Couldn't connect to the database: %s\n", err.Error())
+	} else if database == nil {
+		log.Fatalln("Couldn't connect to the database; It may not be running.")
 	} else if err = database.Ping(); os.IsExist(err) {
 		log.Fatalf("Couldn't establish the connection to the database: %s\n", err.Error())
 	} else {
@@ -55,6 +57,7 @@ func main() {
 	log.Println("Initializing server...")
 	server := gin.Default()
 
+	// API Endpoints.
 	server.GET("/polls", pollsHandler)
 	server.POST("/register", registerHander)
 	server.POST("/unregister", unregisterHandler)

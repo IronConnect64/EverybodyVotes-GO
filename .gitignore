@@ -12,4 +12,4 @@
 *.out
 
 # Custom stuff
-config.json
+config.yml

@@ -32,3 +32,4 @@ deps:
 	@echo "Fetching dependencies..."
 	@$(GOGET) -u github.com/gin-gonic/gin
 	@$(GOGET) -u github.com/go-sql-driver/mysql
+	@$(GOGET) -u gopkg.in/yaml.v2
